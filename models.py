@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db: SQLAlchemy = SQLAlchemy()
 
+
 class Router(db.Model):
 
     __tablename__ = 'routers'
@@ -10,7 +11,8 @@ class Router(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     hostname = db.Column(db.String)
     motd = db.Column(db.String)
-    interfaces = db.relationship('Interface', backref='router', cascade='all,delete')
+    interfaces = db.relationship(
+        'Interface', backref='router', cascade='all,delete')
 
     def __repr__(self) -> str:
         return f'Router(id={self.id!r}, hostname={self.hostname!r})'
@@ -22,6 +24,7 @@ class Router(db.Model):
             'interfaces': [interface.serialize() for interface in self.interfaces]
         }
 
+
 class Interface(db.Model):
 
     __tablename__ = 'interfaces'
@@ -30,9 +33,10 @@ class Interface(db.Model):
     name = db.Column(db.String)
     ip = db.Column(db.String)
     netmask = db.Column(db.String)
-    description =  db.Column(db.String)
+    description = db.Column(db.String)
 
-    router_id = db.Column(db.Integer, db.ForeignKey('routers.id', ondelete='CASCADE'), nullable=True)
+    router_id = db.Column(db.Integer, db.ForeignKey(
+        'routers.id', ondelete='CASCADE'), nullable=True)
     active = db.Column(db.Boolean)
 
     def __repr__(self) -> str:
@@ -43,8 +47,9 @@ class Interface(db.Model):
             'name': self.name,
             'active': self.active,
             'ip': self.ip,
-            'netmask': self.netmask            
+            'netmask': self.netmask
         }
+
 
 class Switch(db.Model):
 
@@ -56,7 +61,6 @@ class Switch(db.Model):
     ip = db.Column(db.String)
     netmask = db.Column(db.String)
     motd = db.Column(db.String)
-
 
     def __repr__(self):
         return f'Switch(id={self.id!r}, hostname={self.hostname!r}) ip={self.ip!r} netmask={self.netmask!r}'

@@ -3,9 +3,11 @@ from models import Router, Interface, db
 
 router_blueprint = Blueprint('routers', __name__)
 
+
 @router_blueprint.route('', methods=['GET'])
 def all() -> str:
     return jsonify([router.serialize() for router in Router.query.all()])
+
 
 @router_blueprint.route('/detail/<id>', methods=['GET'])
 def one(id: str):
@@ -13,7 +15,7 @@ def one(id: str):
         return jsonify({
             'error': 'id must be an integer'
         }), 400
-    
+
     r = Router.query.filter_by(id=int(id)).first()
 
     if r is None:
@@ -33,7 +35,6 @@ def create():
         return jsonify({
             'error': 'invalid or missing hostname'
         }), 400
-
 
     interfaces = []
     # TODO: handle if interfaces are missing
@@ -68,9 +69,9 @@ def delete(id: str):
     r = Router.query.filter_by(id=int(id)).delete()
     db.session.commit()
 
-    if r == 0: 
+    if r == 0:
         return jsonify({
             'error': 'not found'
         }), 404
-   
+
     return '', 204

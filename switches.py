@@ -3,9 +3,11 @@ from models import Switch, db
 
 switches_blueprint = Blueprint('switches', __name__)
 
+
 @switches_blueprint.route('', methods=['GET'])
 def all() -> str:
     return jsonify([switch.serialize() for switch in Switch.query.all()])
+
 
 @switches_blueprint.route('/detail/<id>', methods=['GET'])
 def one(id: str):
@@ -57,9 +59,9 @@ def delete(id: str):
     s = Switch.query.filter_by(id=int(id)).delete()
     db.session.commit()
 
-    if s == 0: 
+    if s == 0:
         return jsonify({
             'error': 'not found'
         }), 404
-   
+
     return '', 204
